@@ -1,0 +1,65 @@
+---
+title: "Determinants and Effects of Foreign Aid"
+author: "Aarjav Joshi"
+format:
+  cmc-article-pdf:
+    fontsize: 12pt
+    margin-left: 1.5in
+    margin-right: 1.5in
+    margin-bottom: 1.2in
+    margin-top: 1.2in
+    keep-tex: true
+    fig-pos: 'tbp'
+    tbl-pos: 'tbp'
+    include-in-header: header.tex
+bibliography: bibliography.bib
+abstract: | 
+  Allison Carnegie and Nicolay Marinov find that foreign aid has positive, short-lived effects on human rights and democracy. The authors exploit the rotating presidency of the Council of European Union to find that over a 20 year period beginning in 1987, countries holding the presidency allocate 16% more aid to their former colonies than to other countries. In this paper, I explore whether aid allocation is responsive to poor conditions in recipient countries. I find that prior mortality, migration, and HIV incidence are not statistically significant determinants of future aid distribution. Then, I investigate the effects of aid receipt on public health and fiscal solvency: I find statistically significant evidence that aid reduces mortality and increases unemployment. I find statistically insignificant evidence that aid receipt increases in-migration, HIV incidence, public debt, and capital formation. These results prompt further inquiry into the efficiency of aid distribution and management of aid receipt.
+  ^[All replication data and scripts are available at <https://github.com/aarjavjoshi/aqrd_final_23>]
+---
+
+# Introduction
+
+Inflation-adjusted global allocation of aid has steadily risen over time, prompting academic study of the value of foreign aid in spurring growth and mediating crises among developing nations.[^1] While a number of studies have aimed to answer this question, most of the literature is plagued by endogeneity --- aid is not randomly assigned. Countries with poor economic, health, and/or government performance are likely to receive aid as they continue to suffer through extended developmental crises.
+
+[^1]: "Net ODA", *OECD*, 2023. <https://data.oecd.org/oda/net-oda.htm>.
+
+@carnegie2017 find a quasi-experiment to address endogeneity concerns: the rotating presidency of the Council of the European Union. Since 1965, status of the 6-month presidency term of the Council has cycled from country to country through rotating, and thus effectively random, assignments. Holding the presidency in the second half of the year, from July to December, grants a country considerable power in managing the budget development process for the following year. Indeed, @carnegie2017 find that when a country holds the presidency in the second half of the year, the country's former colonies receive on average 16% more aid than other countries in the following year. In my analysis, I model whether aid allocation tracks poor national conditions, namely mortality (deaths per thousand), migration (total immigration less total emigration), and HIV incidence (per thousand). I find no statistically significant evidence that the values of these health measures in year $t-1$ affect aid receipt in year $t$. Furthermore, the effect of lagged colony status is unchanged across these regressions. Because the Council presidency affects aid disbursement but not governance abroad, it satisfies the exclusion restriction in serving as an instrument for foreign aid when measuring the effect of aid on governance. Indeed, @carnegie2017 find that a 10% increase in foreign aid receipt is associated with a 0.17 percentage point increase in the country's CIRI Human Empowerment Index (a human rights index measured from 0 to 14) and 0.2 percentage point increase in the country's Polity IV score (a democracy index measured from -10 to 10). I contribute to the literature by expanding @carnegie2017's analysis to the public health variables of mortality, migration, and HIV incidence, as well as the economic variables of unemployment, external debt stocks, and gross capital formation. External debt stocks are the total debt owed to nonresidents in the form of goods, services, and currency. Gross capital formation documents all outlays to the addition of fixed assets (e.g. roads, bridges, hospitals, etc.) and net changes in inventory. A nation may use allocation of aid to pay back debts owed, or invest in infrastructure that can help grow its economy. Current literature, marred with mixed results [@rahnama2017h; @karras2005] has only studied these issues using two-way fixed effects and panel designs, which do not substantially address the issue of endogeneity that may arise from time-variant changes in aid allocation practices or local crises, whether humanitarian or economic. Employing the same two-stage least squares estimation strategy as @carnegie2017, I find that foreign aid has statistically significant positive effects on unemployment and negative effects on mortality. I also document positive yet statistically insignificant effects on migration, HIV, debt, and capital formation.
+
+# Methodology
+
+## Data
+
+I use data on the public health and economic indicators listed above from the World Bank's World Development Indicators.[^2] All other variables in the analysis are taken from @carnegie2017.
+
+[^2]: See <https://databank.worldbank.org/source/world-development-indicators#>
+
+```{=tex}
+\begin{table}
+\caption{\textbf{Descriptive Statistics}}
+\label{sumstats}
+\input{figures/sumstats.tex}
+\end{table}
+```
+In Table \ref{sumstats}, I present summary statistics of the variables employed in my analysis. On average, 9% of countries are former colonies of the presiding country of the Council. The average aid disbursement is \$24 million dollars.
+
+## Identification Strategy
+
+I estimate the following regression models: $$\log(\mathit{ODA}_{i(t-1)}) = \gamma_0 + \gamma_1Colony_{i(t-2)2} +\sum_{k\in K}\gamma_k\mathbf{I}(i = k) + \sum_{j\in J}\gamma_j\mathbf{I}(t = j) + e_{it}$$ {#eq-1} $$\log(\mathit{ODA}_{i(t-1)}) = \gamma_0 + \gamma_1Colony_{i(t-2)2} + \alpha_1\mathbf{Z}_{i(t-2)} +\sum_{k\in K}\gamma_k\mathbf{I}(i = k) + \sum_{j\in J}\gamma_j\mathbf{I}(t = j) + e_{it}$$ {#eq-2} $$Y_{it} = \beta_0 + \beta_1\log(\mathit{ODA}_{i(t-1)}) + \mathbf{X}_{it}\Gamma + \sum_{k\in K}\beta_k\mathbf{I}(i = k) + \sum_{j\in J}\beta_j\mathbf{I}(t = j) + u_{it},$$ {#eq-3} Equation 1 is the first stage regression, where the outcome, $\mathit{ODA}_{i(t-1)}$, is the once-lagged amount of foreign aid received by country $i$ and $Colony_{i(t-2)2}$ is a binary variable that takes the value of 1 if the recipient country was once a colony of the country presiding over the council in the second half of year $t-2$. The other variables in the first stage regression are indicators for country and year to control for time-invariant and place-invariant trends, respectively. In Equation 2, I add $\mathbf{Z}_{i(t-2)}$ to Equation 1. This variable is a continuous public health measure (e.g. mortality) to estimate the effect that crises in year $t-2$ track with aid disbursement in year $t-1$. Because the Council presidency is random, it is likely to be uncorrelated with the public health measures in the recipient country. $\mathbf{X}_{it}$ is a vector of covariates that Equation 2 is the reduced form regression, where $Y_{it}$ denotes a public health or economic outcome variable. @carnegie2017 show that the instrument of lagged colony status satisfies the relevancy condition: it correlates with aid disbursement. The authors explain that lagged colony status likely does not affect governance outcomes in the recipient countries, due to the president's limited powers outside of the budgetary process, administrative burden, spontaneous agenda items, and short term length. I extend this same validation for the exclusion restriction to my analysis on recipient countries' economic and public health performance.
+
+# Results
+
+![](figures/replication1.png){width="6in"}
+
+![](figures/extension1.png){width="6in"}
+
+![](figures/extension2.png){width="6in"}
+
+![](figures/extension3.png){width="6in"}
+
+# Conclusion
+
+To conclude, our study echoes the findings of Carnegie and Marinov, affirming the transient positive effects of foreign aid on human rights and democracy. Following Carnegie and Marinov's exploitation of the the Council of the European Union's rotating presidency as a lens, I observe that a country presiding over the Council during the budget-making term allocates 16% more aid to former colonies over a 20-year period starting in 1987. Prior mortality, migration, and HIV incidence are not statistically significant determinants of future aid distribution. Turning to the impact of aid receipt, we found robust evidence linking aid to reduced mortality yet increased unemployment. However, the study suggests that aid has statistically insignificant effects on in-migration, HIV incidence, public debt, and capital formation. These outcomes prompt a closer look at the efficiency of aid distribution and the management of aid receipt---an essential step in refining aid strategies for optimal impact.
+
+::: {#refs}
+:::
